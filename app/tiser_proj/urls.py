@@ -3,6 +3,7 @@ from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
+from rest_framework.authtoken import views
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -18,4 +19,5 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("apidocs/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     path("api/v1/", include("tiser.urls", namespace="tiser_api")),
+    path("api/v1/token-auth/", views.obtain_auth_token)
 ]

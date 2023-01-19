@@ -1,8 +1,5 @@
 # Tiser - API-сервис управления рекламными объявлениями (тизерами).
-![CI](https://github.com/RuslanSibgatulin/Notifications_drf/actions/workflows/test.yml/badge.svg)
-
-Сервис управления тизерами.
-
+![CI](https://github.com/RuslanSibgatulin/Tiser_drf/actions/workflows/test.yml/badge.svg)
 
 ## Используемые технологии
 - Код приложения на Python

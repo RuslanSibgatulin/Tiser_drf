@@ -36,6 +36,6 @@ class TiserListPaymentSerializer(TiserListSerializer):
     price = serializers.FloatField(min_value=0.01)
 
 
-class TiserPaymentResponceSerializer(serializers.Serializer):
+class TiserPaymentResponseSerializer(serializers.Serializer):
     message = serializers.CharField()
     count = serializers.IntegerField()

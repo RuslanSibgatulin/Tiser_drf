@@ -1,0 +1,29 @@
+version: '3'
+
+volumes:
+  static:
+  notice_data:
+
+services:
+  postgres:
+    container_name: notice_postgres
+    image: postgres:14.1-alpine
+    env_file: envs/NoticeAdmin.env
+    volumes:
+      - notice_data/:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+
+  backend:
+    container_name: notice_django
+    env_file: envs/NoticeAdmin.env
+    build:
+      context: ..
+      dockerfile: docker/dockerfiles/NoticeAdminDockerfile
+    volumes:
+      - static:/usr/src/app/static
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    ports:
+      - 8000:8000

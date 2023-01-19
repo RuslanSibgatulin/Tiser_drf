@@ -30,7 +30,7 @@ runserver:
 shell:
 		cd app && python manage.py shell --settings=tiser_proj.settings_local
 
-ci-tests:
+tests:
 		cd app && python manage.py test --settings=tiser_proj.settings_local
 
 lint-install:

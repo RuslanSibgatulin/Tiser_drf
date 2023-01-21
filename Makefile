@@ -1,5 +1,5 @@
 ## ----------------------------------------------------------------------
-## Makefile is to manage Notice Admin.
+## Makefile is to manage Tiser Admin.
 ## ----------------------------------------------------------------------
 include docker/envs/tiser.env
 export
@@ -40,3 +40,6 @@ lint:
 		isort app/
 		flake8 app/ --show-source
 		mypy app/ --ignore-missing-imports --no-strict-optional --exclude /migrations/ --exclude /tests/
+
+work-time:
+		journalctl -S "2023-01-17 18:00" | grep systemd-sleep > ~/Документы/tiser_drf_time.csv

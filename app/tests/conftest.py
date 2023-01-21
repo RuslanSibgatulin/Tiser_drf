@@ -41,6 +41,18 @@ def client_is_author(api_client, api_url, user_author):
 
 
 @pytest.fixture
+def client_is_manager(api_client, api_url, user_manager):
+    data = {
+        "username": MANAGER_NAME,
+        "password": MANAGER_NAME
+    }
+    response = api_client.post(api_url + "token-auth/", data=data)
+    user_token = response.json()["token"]
+    api_client.credentials(HTTP_AUTHORIZATION=f"Token {user_token}")
+    return api_client
+
+
+@pytest.fixture
 def category():
     from tiser.models import Category
     return Category.objects.create(title="Category 1")

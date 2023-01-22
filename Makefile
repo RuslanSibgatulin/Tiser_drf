@@ -1,5 +1,5 @@
 ## ----------------------------------------------------------------------
-## Makefile is to manage Notice Admin.
+## Makefile is to manage Tiser Admin.
 ## ----------------------------------------------------------------------
 include docker/envs/tiser.env
 export
@@ -16,7 +16,7 @@ stop:
 		cd docker && DOCKER_BUILDKIT=1 docker-compose $(compose_files) down
 
 init:  ## First and full initialization. Create database, superuser and collect static files
-		docker exec -it tiser_app bash -c \
+		docker exec -it tiser_django bash -c \
 		'python manage.py migrate && python manage.py createsuperuser --noinput && python manage.py collectstatic --noinput'
 
 migrate:
@@ -30,9 +30,6 @@ runserver:
 shell:
 		cd app && python manage.py shell --settings=tiser_proj.settings_local
 
-ci-tests:
-		cd app && python manage.py test --settings=tiser_proj.settings_local
-
 lint-install:
 		pip install lxml mypy wemake-python-styleguide flake8-html types-requests types-pytz
 
@@ -40,3 +37,6 @@ lint:
 		isort app/
 		flake8 app/ --show-source
 		mypy app/ --ignore-missing-imports --no-strict-optional --exclude /migrations/ --exclude /tests/
+
+work-time:
+		journalctl -S "2023-01-17 18:00" | grep systemd-sleep > ~/Документы/tiser_drf_time.csv

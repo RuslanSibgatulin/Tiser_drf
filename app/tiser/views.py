@@ -72,7 +72,9 @@ class TiserPayment(generics.GenericAPIView):
         return payment_count
 
     @swagger_auto_schema(
-        operation_description="Apply tisers payment with price",
+        operation_id="Apply tisers payment",
+        operation_summary="Apply tisers payment",
+        operation_description="Apply tisers payment with the given price.",
         tags=["payment"],
         request_body=TiserListPaymentSerializer,
         responses={200: TiserPaymentResponseSerializer()}
@@ -91,7 +93,9 @@ class TiserPayment(generics.GenericAPIView):
         )
 
     @swagger_auto_schema(
-        operation_description="Cancel tisers without payment",
+        operation_id="Cancel tisers payment",
+        operation_summary="Cancel tisers payment",
+        operation_description="Set tisers statuses to cancelled.",
         tags=["payment"],
         request_body=TiserListSerializer,
         responses={200: TiserPaymentResponseSerializer()}

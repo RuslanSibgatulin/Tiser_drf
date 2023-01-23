@@ -1,5 +1,5 @@
 ## ----------------------------------------------------------------------
-## Makefile is to manage Tiser Admin.
+## Makefile is to manage Tiser_drf.
 ## ----------------------------------------------------------------------
 include docker/envs/tiser.env
 export

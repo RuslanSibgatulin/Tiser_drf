@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from accounts.models import TiserUser
@@ -12,6 +13,8 @@ from .models import Category, Tiser, TiserStatus
 from .serializers import (CategorySerializer, TiserListPaymentSerializer,
                           TiserListSerializer, TiserPaymentResponseSerializer,
                           TiserSerializer)
+
+logger = logging.getLogger(__name__)
 
 
 class CategoryList(generics.ListAPIView):
@@ -54,6 +57,7 @@ class TiserPayment(generics.GenericAPIView):
             id__in=payed_tisers,
             status=TiserStatus.CREATED
         )
+        logger.debug("Payment for tisers requested: %s", tisers)
 
         payment_count = 0
         for tiser in tisers:
@@ -68,6 +72,7 @@ class TiserPayment(generics.GenericAPIView):
                 TiserUser.objects.filter(id=tiser.author.id).update(
                     amount=F("amount") + tiser_price
                 )
+                logger.info("Tiser payment accepted: %s", tiser)
 
         return payment_count
 
@@ -113,8 +118,9 @@ class TiserPayment(generics.GenericAPIView):
                 status=TiserStatus.CANCELLED,
                 updated_at=datetime.utcnow()
             )
+        logger.info("Tisers payment cancelled: %s", tisers)
 
         return Response(
-            {"message": "Tisers cancelled for payment", "count": cancel_count},
+            {"message": "Tisers payment cancelled", "count": cancel_count},
             status=status.HTTP_200_OK
         )

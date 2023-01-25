@@ -35,4 +35,4 @@ jobs:
 
       - name: Run pytest
         run: |
-          cd app/tests && pytest
+          cd app/tests && pytest -v

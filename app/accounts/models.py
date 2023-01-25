@@ -4,4 +4,4 @@ from django.utils.translation import gettext_lazy as _
 
 
 class TiserUser(AbstractUser):
-    amount = models.FloatField(_("Amount"), default=0)
+    amount = models.PositiveIntegerField(_("Amount"), default=0)

@@ -26,14 +26,14 @@ class TiserSerializer(serializers.ModelSerializer):
 
 class TiserListSerializer(serializers.Serializer):
     tisers = serializers.ListField(
-        child=serializers.UUIDField(),
+        child=serializers.IntegerField(),
         min_length=1,
         max_length=100
     )
 
 
 class TiserListPaymentSerializer(TiserListSerializer):
-    price = serializers.FloatField(min_value=0.01)
+    price = serializers.IntegerField(min_value=1)
 
 
 class TiserPaymentResponseSerializer(serializers.Serializer):

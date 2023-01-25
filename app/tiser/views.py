@@ -61,18 +61,17 @@ class TiserPayment(generics.GenericAPIView):
 
         payment_count = 0
         for tiser in tisers:
-            with transaction.atomic():
-                # set tisers PAYED status
-                payment_count += Tiser.objects.filter(id=tiser.id).update(
-                    status=TiserStatus.PAYED,
-                    price=tiser_price,
-                    updated_at=datetime.now()
-                )
-                # increase author's amount
-                TiserUser.objects.filter(id=tiser.author.id).update(
-                    amount=F("amount") + tiser_price
-                )
-                logger.info("Tiser payment accepted: %s", tiser)
+            # set tisers PAYED status
+            payment_count += Tiser.objects.filter(id=tiser.id).update(
+                status=TiserStatus.PAYED,
+                price=tiser_price,
+                updated_at=datetime.now()
+            )
+            # increase author's amount
+            TiserUser.objects.filter(id=tiser.author.id).update(
+                amount=F("amount") + tiser_price
+            )
+            logger.info("Tiser payment accepted: %s", tiser)
 
         return payment_count
 
@@ -90,7 +89,8 @@ class TiserPayment(generics.GenericAPIView):
         payed_tisers = serializer.data.get("tisers", [])
         tiser_price = int(serializer.data.get("price"))
 
-        payment_count = self.save_payment(payed_tisers, tiser_price)
+        with transaction.atomic():
+            payment_count = self.save_payment(payed_tisers, tiser_price)
 
         return Response(
             {"message": "Payment accepted", "count": payment_count},

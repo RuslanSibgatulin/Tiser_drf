@@ -6,13 +6,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class UUIDMixin(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
-    class Meta:
-        abstract = True
-
-
 class TiserStatus(models.TextChoices):
     CREATED = "created", _("Created")
     PAYED = "payed", _("Payed")
@@ -22,11 +15,15 @@ class TiserStatus(models.TextChoices):
 class Category(models.Model):
     title = models.CharField(_("Title"), max_length=50)
 
+    class Meta:
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
+
     def __str__(self) -> str:
         return f"{self.title}"
 
 
-class Tiser(UUIDMixin):
+class Tiser(models.Model):
     title = models.CharField(_("Title"), max_length=64)
     desc = models.TextField(_("Description"), blank=True)
     author = models.ForeignKey(
@@ -46,11 +43,11 @@ class Tiser(UUIDMixin):
         choices=TiserStatus.choices,
         default=TiserStatus.CREATED
     )
-    price = models.FloatField(
+    price = models.PositiveIntegerField(
         _("Price"),
         editable=False,
         default=0,
-        validators=[MinValueValidator(0.01)]
+        validators=[MinValueValidator(1)]
     )
     created_at = models.DateTimeField(_("Created"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated"), auto_now=True)

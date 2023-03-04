@@ -60,18 +60,19 @@ class TiserPayment(generics.GenericAPIView):
         logger.debug("Payment for tisers requested: %s", tisers)
 
         payment_count = 0
-        for tiser in tisers:
-            # set tisers PAYED status
-            payment_count += Tiser.objects.filter(id=tiser.id).update(
-                status=TiserStatus.PAYED,
-                price=tiser_price,
-                updated_at=datetime.now()
-            )
-            # increase author's amount
-            TiserUser.objects.filter(id=tiser.author.id).update(
-                amount=F("amount") + tiser_price
-            )
-            logger.info("Tiser payment accepted: %s", tiser)
+        with transaction.atomic():
+            for tiser in tisers:
+                # set tisers PAYED status
+                payment_count += Tiser.objects.select_for_update().filter(id=tiser.id).update(
+                    status=TiserStatus.PAYED,
+                    price=tiser_price,
+                    updated_at=datetime.now()
+                )
+                # increase author's amount
+                TiserUser.objects.select_for_update().filter(id=tiser.author.id).update(
+                    amount=F("amount") + tiser_price
+                )
+                logger.info("Tiser payment accepted: %s", tiser)
 
         return payment_count
 
@@ -88,9 +89,7 @@ class TiserPayment(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         payed_tisers = serializer.data.get("tisers", [])
         tiser_price = int(serializer.data.get("price"))
-
-        with transaction.atomic():
-            payment_count = self.save_payment(payed_tisers, tiser_price)
+        payment_count = self.save_payment(payed_tisers, tiser_price)
 
         return Response(
             {"message": "Payment accepted", "count": payment_count},
@@ -111,7 +110,7 @@ class TiserPayment(generics.GenericAPIView):
         tisers = serializer.data.get("tisers", [])
 
         with transaction.atomic():
-            cancel_count = Tiser.objects.filter(
+            cancel_count = Tiser.objects.select_for_update().filter(
                 id__in=tisers,
                 status=TiserStatus.CREATED
             ).update(

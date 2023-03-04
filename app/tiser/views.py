@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from django.utils import timezone
 
 from accounts.models import TiserUser
 from django.db import transaction
@@ -66,7 +66,7 @@ class TiserPayment(generics.GenericAPIView):
                 payment_count += Tiser.objects.select_for_update().filter(id=tiser.id).update(
                     status=TiserStatus.PAYED,
                     price=tiser_price,
-                    updated_at=datetime.now()
+                    updated_at=timezone.now()
                 )
                 # increase author's amount
                 TiserUser.objects.select_for_update().filter(id=tiser.author.id).update(
@@ -115,7 +115,7 @@ class TiserPayment(generics.GenericAPIView):
                 status=TiserStatus.CREATED
             ).update(
                 status=TiserStatus.CANCELLED,
-                updated_at=datetime.utcnow()
+                updated_at=timezone.now()
             )
         logger.info("Tisers payment cancelled: %s", tisers)
 
